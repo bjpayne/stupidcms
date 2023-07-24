@@ -1,1 +1,3 @@
-# CMS
+# Stupid CMS
+
+A dead simple CMS.
