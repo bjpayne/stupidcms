@@ -70,122 +70,120 @@ let closeModal = () => {
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
         </template>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-4">
-                    <div class="p-6 text-gray-900">
-                        <form @submit.prevent="submit">
-                            <div class="flex gap-3 mb-3">
-                                <div class="w-1/4">
-                                    <InputLabel for="first-name" value="First name"/>
+        <div class="py-12 w-100 mx-5">
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-4">
+                <div class="p-6 text-gray-900">
+                    <form @submit.prevent="submit">
+                        <div class="flex gap-3 mb-3">
+                            <div class="w-1/4">
+                                <InputLabel for="first-name" value="First name"/>
+
+                                <TextInput
+                                    id="first-name"
+                                    type="text"
+                                    class="mt-1 block w-full"
+                                    v-model="form.first_name"
+                                    required
+                                />
+
+                                <InputError class="mt-2" :message="form.errors.first_name"/>
+                            </div>
+
+                            <div class="w-1/4">
+                                <InputLabel for="first-name" value="Last name"/>
+
+                                <TextInput
+                                    id="last-name"
+                                    type="text"
+                                    class="mt-1 block w-full"
+                                    v-model="form.last_name"
+                                    required
+                                />
+
+                                <InputError class="mt-2" :message="form.errors.last_name"/>
+                            </div>
+
+                            <div class="w-1/4">
+                                <InputLabel for="email" value="Email"/>
+
+                                <TextInput
+                                    id="email"
+                                    type="email"
+                                    class="mt-1 block w-full"
+                                    v-model="form.email"
+                                    required
+                                />
+
+                                <InputError class="mt-2" :message="form.errors.email"/>
+                            </div>
+
+                            <div class="w-1/4 flex gap-3">
+                                <div class="w-1/2">
+                                    <InputLabel for="password" value="Password"/>
 
                                     <TextInput
-                                        id="first-name"
-                                        type="text"
+                                        id="password"
+                                        type="password"
                                         class="mt-1 block w-full"
-                                        v-model="form.first_name"
+                                        v-model="form.password"
                                         required
                                     />
 
-                                    <InputError class="mt-2" :message="form.errors.first_name"/>
+                                    <InputError class="mt-2" :message="form.errors.password"/>
                                 </div>
 
-                                <div class="w-1/4">
-                                    <InputLabel for="first-name" value="Last name"/>
+                                <div class="w-1/2">
+                                    <InputLabel for="password-confirmation" value="Confirm"/>
 
                                     <TextInput
-                                        id="last-name"
-                                        type="text"
+                                        id="password-confirmation"
+                                        type="password"
                                         class="mt-1 block w-full"
-                                        v-model="form.last_name"
+                                        v-model="form.password_confirmation"
                                         required
                                     />
 
-                                    <InputError class="mt-2" :message="form.errors.last_name"/>
-                                </div>
+                                    <InputError class="mt-2" :message="form.errors.password_confirmation"/>
 
-                                <div class="w-1/4">
-                                    <InputLabel for="email" value="Email"/>
-
-                                    <TextInput
-                                        id="email"
-                                        type="email"
-                                        class="mt-1 block w-full"
-                                        v-model="form.email"
-                                        required
-                                    />
-
-                                    <InputError class="mt-2" :message="form.errors.email"/>
-                                </div>
-
-                                <div class="w-1/4 flex gap-3">
-                                    <div class="w-1/2">
-                                        <InputLabel for="password" value="Password"/>
-
-                                        <TextInput
-                                            id="password"
-                                            type="password"
-                                            class="mt-1 block w-full"
-                                            v-model="form.password"
-                                            required
-                                        />
-
-                                        <InputError class="mt-2" :message="form.errors.password"/>
-                                    </div>
-
-                                    <div class="w-1/2">
-                                        <InputLabel for="password-confirmation" value="Confirm"/>
-
-                                        <TextInput
-                                            id="password-confirmation"
-                                            type="password"
-                                            class="mt-1 block w-full"
-                                            v-model="form.password_confirmation"
-                                            required
-                                        />
-
-                                        <InputError class="mt-2" :message="form.errors.password_confirmation"/>
-
-                                    </div>
                                 </div>
                             </div>
-                            <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                                Submit
-                            </PrimaryButton>
-                        </form>
-                    </div>
+                        </div>
+                        <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                            Submit
+                        </PrimaryButton>
+                    </form>
                 </div>
+            </div>
 
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-4">
-                    <table class="w-full text-sm text-left text-gray-800">
-                        <thead class="text-xs uppercase bg-gray-50">
-                            <tr>
-                                <th scope="col" class="px-6 py-3">First Name</th>
-                                <th scope="col" class="px-6 py-3">Last Name</th>
-                                <th scope="col" class="px-6 py-3">Email</th>
-                                <th scope="col" class="px-6 py-3 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(user, index) in users" class="border-b"
-                                :class="{'bg-gray-50 text-gray-800': index & 1}"
-                            >
-                                <td class="px-6 py-3">{{ user.first_name }}</td>
-                                <td class="px-6 py-3">{{ user.last_name }}</td>
-                                <td class="px-6 py-3">{{ user.email }}</td>
-                                <td class="px-6 py-3 text-right">
-                                    <SecondaryButton class="mr-3">
-                                        Edit
-                                    </SecondaryButton>
+            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-4">
+                <table class="w-full text-sm text-left text-gray-800">
+                    <thead class="text-xs uppercase bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3">First Name</th>
+                        <th scope="col" class="px-6 py-3">Last Name</th>
+                        <th scope="col" class="px-6 py-3">Email</th>
+                        <th scope="col" class="px-6 py-3 text-right">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(user, index) in users" class="border-b"
+                        :class="{'bg-gray-50 text-gray-800': index & 1}"
+                    >
+                        <td class="px-6 py-3">{{ user.first_name }}</td>
+                        <td class="px-6 py-3">{{ user.last_name }}</td>
+                        <td class="px-6 py-3">{{ user.email }}</td>
+                        <td class="px-6 py-3 text-right">
+                            <SecondaryButton class="mr-3">
+                                Edit
+                            </SecondaryButton>
 
-                                    <DeleteButton @click="confirmUserDeletion(user.id)">
-                                        Delete
-                                    </DeleteButton>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+                            <DeleteButton @click="confirmUserDeletion(user.id)">
+                                Delete
+                            </DeleteButton>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 

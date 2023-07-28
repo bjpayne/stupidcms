@@ -1,3 +1,3 @@
-# Stupid CMS
+# Stupid CRM
 
-A dead simple CMS.
+A stupidly simple CRM.
