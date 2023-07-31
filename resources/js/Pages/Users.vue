@@ -11,9 +11,10 @@ import DeleteButton from "../../../vendor/laravel/breeze/stubs/inertia-vue-ts/re
 import DangerButton from "@/Components/DangerButton.vue";
 import Modal from "@/Components/Modal.vue";
 import {nextTick, ref} from "vue";
+import PageTitle from "@/Components/PageTitle.vue";
 
 defineProps({
-    users: Array
+    users: Array,
 });
 
 const confirmingUserDeletion = ref(false);
@@ -25,6 +26,7 @@ let form = useForm({
     email: '',
     password: '',
     password_confirmation: '',
+    avatar: ''
 });
 
 let userForm = useForm({
@@ -60,133 +62,152 @@ let closeModal = () => {
 
     form.reset();
 };
+
+let avatarPreview = '#';
+
+let previewAvatar = (event) => {
+    form.avatar = event.target.files[0];
+
+    avatarPreview = URL.createObjectURL(form.avatar);
+}
 </script>
 
 <template>
-    <Head title="Dashboard" />
+    <Head title="Users" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Dashboard</h2>
-        </template>
+        <PageTitle>Users</PageTitle>
 
-        <div class="py-12">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-4">
-                    <div class="p-6 text-gray-900">
-                        <form @submit.prevent="submit">
-                            <div class="flex gap-3 mb-3">
-                                <div class="w-1/4">
-                                    <InputLabel for="first-name" value="First name"/>
+        <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg mb-5">
+            <header>
+                <h2 class="text-lg font-medium text-gray-900">Add User</h2>
 
-                                    <TextInput
-                                        id="first-name"
-                                        type="text"
-                                        class="mt-1 block w-full"
-                                        v-model="form.first_name"
-                                        required
-                                    />
+                <p class="mt-1 text-sm text-gray-600">
+                    Add a new user to the system.
+                </p>
+            </header>
+            <form @submit.prevent="submit">
+                <div class="flex gap-3 mb-3 max-w-4xl">
+                    <div class="w-1/3 flex items-center justify-center flex-col">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-64 h-auto fill-gray-300" v-if="! form.avatar">
+                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-5.5-2.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM10 12a5.99 5.99 0 00-4.793 2.39A6.483 6.483 0 0010 16.5a6.483 6.483 0 004.793-2.11A5.99 5.99 0 0010 12z" clip-rule="evenodd" />
+                        </svg>
 
-                                    <InputError class="mt-2" :message="form.errors.first_name"/>
-                                </div>
+                        <img id="avatar-preview" :src="avatarPreview" alt="User Avatar" class="w-64 h-auto fill-gray-300 rounded-full" v-if="form.avatar"/>
 
-                                <div class="w-1/4">
-                                    <InputLabel for="first-name" value="Last name"/>
+                        <div>
+                            <label class="block mb-2 text-sm font-medium text-gray-900" for="avatar">Upload file</label>
+                            <input class="block w-full text-gray-900 cursor-pointer focus:outline-none" aria-describedby="avatar_help" id="avatar" type="file" @input="previewAvatar($event)">
+                        </div>
+                    </div>
+                    <div class="w-2/3">
+                        <div>
+                            <InputLabel for="first-name" value="First name"/>
 
-                                    <TextInput
-                                        id="last-name"
-                                        type="text"
-                                        class="mt-1 block w-full"
-                                        v-model="form.last_name"
-                                        required
-                                    />
+                            <TextInput
+                                id="first-name"
+                                type="text"
+                                class="mt-1 block w-full"
+                                v-model="form.first_name"
+                                required
+                            />
 
-                                    <InputError class="mt-2" :message="form.errors.last_name"/>
-                                </div>
+                            <InputError class="mt-2" :message="form.errors.first_name"/>
+                        </div>
 
-                                <div class="w-1/4">
-                                    <InputLabel for="email" value="Email"/>
+                        <div>
+                            <InputLabel for="first-name" value="Last name"/>
 
-                                    <TextInput
-                                        id="email"
-                                        type="email"
-                                        class="mt-1 block w-full"
-                                        v-model="form.email"
-                                        required
-                                    />
+                            <TextInput
+                                id="last-name"
+                                type="text"
+                                class="mt-1 block w-full"
+                                v-model="form.last_name"
+                                required
+                            />
 
-                                    <InputError class="mt-2" :message="form.errors.email"/>
-                                </div>
+                            <InputError class="mt-2" :message="form.errors.last_name"/>
+                        </div>
 
-                                <div class="w-1/4 flex gap-3">
-                                    <div class="w-1/2">
-                                        <InputLabel for="password" value="Password"/>
+                        <div>
+                            <InputLabel for="email" value="Email"/>
 
-                                        <TextInput
-                                            id="password"
-                                            type="password"
-                                            class="mt-1 block w-full"
-                                            v-model="form.password"
-                                            required
-                                        />
+                            <TextInput
+                                id="email"
+                                type="email"
+                                class="mt-1 block w-full"
+                                v-model="form.email"
+                                required
+                            />
 
-                                        <InputError class="mt-2" :message="form.errors.password"/>
-                                    </div>
+                            <InputError class="mt-2" :message="form.errors.email"/>
+                        </div>
 
-                                    <div class="w-1/2">
-                                        <InputLabel for="password-confirmation" value="Confirm"/>
+                        <div>
+                            <InputLabel for="password" value="Password"/>
 
-                                        <TextInput
-                                            id="password-confirmation"
-                                            type="password"
-                                            class="mt-1 block w-full"
-                                            v-model="form.password_confirmation"
-                                            required
-                                        />
+                            <TextInput
+                                id="password"
+                                type="password"
+                                class="mt-1 block w-full"
+                                v-model="form.password"
+                                required
+                            />
 
-                                        <InputError class="mt-2" :message="form.errors.password_confirmation"/>
+                            <InputError class="mt-2" :message="form.errors.password"/>
+                        </div>
 
-                                    </div>
-                                </div>
-                            </div>
-                            <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
-                                Submit
-                            </PrimaryButton>
-                        </form>
+                        <div>
+                            <InputLabel for="password-confirmation" value="Confirm"/>
+
+                            <TextInput
+                                id="password-confirmation"
+                                type="password"
+                                class="mt-1 block w-full"
+                                v-model="form.password_confirmation"
+                                required
+                            />
+
+                            <InputError class="mt-2" :message="form.errors.password_confirmation"/>
+
+                        </div>
                     </div>
                 </div>
+                <PrimaryButton :class="{ 'opacity-25': form.processing }" :disabled="form.processing">
+                    Submit
+                </PrimaryButton>
+            </form>
+        </div>
 
-                <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg mb-4">
-                    <table class="w-full text-sm text-left text-gray-800">
-                        <thead class="text-xs uppercase bg-gray-50">
-                            <tr>
-                                <th scope="col" class="px-6 py-3">First Name</th>
-                                <th scope="col" class="px-6 py-3">Last Name</th>
-                                <th scope="col" class="px-6 py-3">Email</th>
-                                <th scope="col" class="px-6 py-3 text-right">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="(user, index) in users" class="border-b"
-                                :class="{'bg-gray-50 text-gray-800': index & 1}"
-                            >
-                                <td class="px-6 py-3">{{ user.first_name }}</td>
-                                <td class="px-6 py-3">{{ user.last_name }}</td>
-                                <td class="px-6 py-3">{{ user.email }}</td>
-                                <td class="px-6 py-3 text-right">
-                                    <SecondaryButton class="mr-3">
-                                        Edit
-                                    </SecondaryButton>
+        <div class="bg-white overflow-hidden sm:rounded-lg mb-4">
+            <table class="w-full text-sm text-left text-gray-800">
+                <thead class="text-xs uppercase bg-gray-50">
+                <tr>
+                    <th scope="col" class="px-6 py-3">First Name</th>
+                    <th scope="col" class="px-6 py-3">Last Name</th>
+                    <th scope="col" class="px-6 py-3">Email</th>
+                    <th scope="col" class="px-6 py-3 text-right">Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(user, index) in users" class="border-b"
+                    :class="{'bg-gray-50 text-gray-800': index & 1}"
+                >
+                    <td class="px-6 py-3">{{ user.first_name }}</td>
+                    <td class="px-6 py-3">{{ user.last_name }}</td>
+                    <td class="px-6 py-3">{{ user.email }}</td>
+                    <td class="px-6 py-3 text-right">
+                        <SecondaryButton class="mr-3">
+                            Edit
+                        </SecondaryButton>
 
-                                    <DeleteButton @click="confirmUserDeletion(user.id)">
-                                        Delete
-                                    </DeleteButton>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+                        <DeleteButton @click="confirmUserDeletion(user.id)">
+                            Delete
+                        </DeleteButton>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
         </div>
 
         <Modal :show="confirmingUserDeletion" @close="closeModal">

@@ -30,10 +30,14 @@ Route::get('/', function (\Illuminate\Http\Request $request) {
 });
 
 Route::get('/dashboard', function () {
+    return Inertia::render('Dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::get('/users', function () {
     $users = User::get();
 
-    return Inertia::render('Dashboard', compact('users'));
-})->middleware(['auth', 'verified'])->name('dashboard');
+    return Inertia::render('Users', compact('users'));
+})->middleware(['auth', 'verified'])->name('users.index');
 
 Route::post('/users', function (\Illuminate\Http\Request $request) {
     $request->validate([
