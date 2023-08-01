@@ -18,7 +18,9 @@ defineProps({
 });
 
 const confirmingUserDeletion = ref(false);
+const editingUser = ref(false);
 const userPasswordInput = ref(null);
+const avatarPreview = ref('#');
 
 let form = useForm({
     first_name: '',
@@ -38,6 +40,10 @@ let submit = () => {
     form.post(route('users.store'), {
         onFinish: () => form.reset(),
     });
+};
+
+let editUser = (user_id) => {
+    editingUser.value = true;
 };
 
 let confirmUserDeletion = (user_id) => {
@@ -63,13 +69,13 @@ let closeModal = () => {
     form.reset();
 };
 
-let avatarPreview = '#';
-
 let previewAvatar = (event) => {
-    form.avatar = event.target.files[0];
+    let file = event.target.files[0];
 
-    avatarPreview = URL.createObjectURL(form.avatar);
-}
+    form.avatar = file;
+
+    avatarPreview.value = URL.createObjectURL(file);
+};
 </script>
 
 <template>
@@ -88,20 +94,25 @@ let previewAvatar = (event) => {
             </header>
             <form @submit.prevent="submit">
                 <div class="flex gap-3 mb-3 max-w-4xl">
-                    <div class="w-1/3 flex items-center justify-center flex-col">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-64 h-auto fill-gray-300" v-if="! form.avatar">
+                    <div class="w-1/3 flex items-center justify-center flex-col mr-6">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-64 h-auto fill-gray-300 cursor-pointer" v-if="! form.avatar" @click="$refs.avatar.click()">
                             <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-5.5-2.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zM10 12a5.99 5.99 0 00-4.793 2.39A6.483 6.483 0 0010 16.5a6.483 6.483 0 004.793-2.11A5.99 5.99 0 0010 12z" clip-rule="evenodd" />
                         </svg>
 
-                        <img id="avatar-preview" :src="avatarPreview" alt="User Avatar" class="w-64 h-auto fill-gray-300 rounded-full" v-if="form.avatar"/>
+                        <img id="avatar-preview" :src="avatarPreview" alt="User Avatar" @click="$refs.avatar.click()"
+                             class="w-64 h-auto fill-gray-300 rounded-full cursor-pointer" v-if="form.avatar"
+                        />
 
                         <div>
                             <label class="block mb-2 text-sm font-medium text-gray-900" for="avatar">Upload file</label>
-                            <input class="block w-full text-gray-900 cursor-pointer focus:outline-none" aria-describedby="avatar_help" id="avatar" type="file" @input="previewAvatar($event)">
+                            <input class="block w-full text-gray-900 focus:outline-none"
+                                   id="avatar" type="file" ref="avatar"
+                                   @input="previewAvatar($event)"
+                            >
                         </div>
                     </div>
                     <div class="w-2/3">
-                        <div>
+                        <div class="mb-2">
                             <InputLabel for="first-name" value="First name"/>
 
                             <TextInput
@@ -115,7 +126,7 @@ let previewAvatar = (event) => {
                             <InputError class="mt-2" :message="form.errors.first_name"/>
                         </div>
 
-                        <div>
+                        <div class="mb-2">
                             <InputLabel for="first-name" value="Last name"/>
 
                             <TextInput
@@ -129,7 +140,7 @@ let previewAvatar = (event) => {
                             <InputError class="mt-2" :message="form.errors.last_name"/>
                         </div>
 
-                        <div>
+                        <div class="mb-2">
                             <InputLabel for="email" value="Email"/>
 
                             <TextInput
@@ -143,7 +154,7 @@ let previewAvatar = (event) => {
                             <InputError class="mt-2" :message="form.errors.email"/>
                         </div>
 
-                        <div>
+                        <div class="mb-2">
                             <InputLabel for="password" value="Password"/>
 
                             <TextInput
@@ -157,7 +168,7 @@ let previewAvatar = (event) => {
                             <InputError class="mt-2" :message="form.errors.password"/>
                         </div>
 
-                        <div>
+                        <div class="mb-2">
                             <InputLabel for="password-confirmation" value="Confirm"/>
 
                             <TextInput
@@ -179,7 +190,7 @@ let previewAvatar = (event) => {
             </form>
         </div>
 
-        <div class="bg-white overflow-hidden sm:rounded-lg mb-4">
+        <div class="bg-white shadow sm:rounded-lg mb-5">
             <table class="w-full text-sm text-left text-gray-800">
                 <thead class="text-xs uppercase bg-gray-50">
                 <tr>

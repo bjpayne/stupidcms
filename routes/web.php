@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Models\User;
+use App\Models\UserAvatar;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -19,14 +20,18 @@ use Illuminate\Validation\Rules;
 |
 */
 
-Route::get('/', function (\Illuminate\Http\Request $request) {
+Route::get('/', function () {
     if (Auth::check()) {
         return redirect()
             ->route('dashboard');
     }
 
-    return redirect()
-        ->route('login');
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
 });
 
 Route::get('/dashboard', function () {
@@ -54,10 +59,19 @@ Route::post('/users', function (\Illuminate\Http\Request $request) {
         'password'   => Hash::make($request->password),
     ]);
 
+    $avatar = $request->file('avatar');
+
+    $userAvatar = new UserAvatar;
+
+    $userAvatar->user_id = $user->id;
+    $userAvatar->avatar = base64_encode($avatar->get());
+
+    $userAvatar->save();
+
     event(new Registered($user));
 
     return redirect()
-        ->route('dashboard')
+        ->route('users.index')
         ->with('User saved!');
 })->middleware(['auth', 'verified'])->name('users.store');
 

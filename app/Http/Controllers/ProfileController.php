@@ -74,7 +74,7 @@ class ProfileController extends Controller
         $user->delete();
 
         return redirect()
-            ->route('dashboard')
+            ->route('users.index')
             ->with('User removed!');
     }
 }
