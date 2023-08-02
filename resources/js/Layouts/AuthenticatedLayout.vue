@@ -16,7 +16,8 @@ const showingNavigationDropdown = ref(false);
             <header class="w-100 flex justify-end p-3">
                 <div id="avatar">
                     <img alt="User Avatar" :title="$page.props.auth.user.first_name"
-                         src="/img/avatar.jpeg" class="w-auto h-16 rounded-full shadow-sm"
+                         :src="'data:image/jpeg;base64,' + $page.props.auth.user.avatar.avatar"
+                         class="w-auto h-16 rounded-full shadow-sm"
                     >
                 </div>
                 <div class="hidden sm:flex sm:items-center sm:ml-6">
@@ -90,7 +91,7 @@ const showingNavigationDropdown = ref(false);
             </header>
             <div class="flex">
                 <!-- Left Sidebar -->
-                <nav class="px-5 w-1/5">
+                <nav class="px-5 w-1/6">
                     <!-- Navigation Links -->
                     <div class="hidden sm:block">
                         <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
@@ -112,7 +113,7 @@ const showingNavigationDropdown = ref(false);
                 </nav>
 
                 <!-- Page Content -->
-                <main class="w-4/5 rounded-tl-lg bg-white min-h-screen">
+                <main class="w-5/6 rounded-tl-lg bg-white min-h-screen">
                     <div class="pt-3 mx-5 w-100">
                         <slot />
                     </div>

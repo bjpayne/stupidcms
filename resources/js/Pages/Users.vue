@@ -1,6 +1,6 @@
 <script setup>
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
-import { Head } from '@inertiajs/vue3';
+import {Head, router, usePage} from '@inertiajs/vue3';
 import { useForm } from '@inertiajs/vue3'
 import TextInput from "@/Components/TextInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
@@ -10,13 +10,17 @@ import SecondaryButton from "../../../vendor/laravel/breeze/stubs/inertia-vue-ts
 import DeleteButton from "../../../vendor/laravel/breeze/stubs/inertia-vue-ts/resources/js/Components/DeleteButton.vue";
 import DangerButton from "@/Components/DangerButton.vue";
 import Modal from "@/Components/Modal.vue";
-import {nextTick, ref} from "vue";
+import {computed, nextTick, ref} from "vue";
 import PageTitle from "@/Components/PageTitle.vue";
+import Pagination from "@/Components/Pagination.vue";
+import SearchInput from "@/Components/SearchInput.vue";
 
 defineProps({
     users: Array,
+    search: '',
 });
 
+const page = usePage();
 const confirmingUserDeletion = ref(false);
 const editingUser = ref(false);
 const userPasswordInput = ref(null);
@@ -36,11 +40,23 @@ let userForm = useForm({
     user_id: ''
 });
 
+let searchForm = useForm({
+    search: page.props.search
+});
+
 let submit = () => {
     form.post(route('users.store'), {
         onFinish: () => form.reset(),
     });
 };
+
+let searchForUser = () => {
+    searchForm.get(route('users.index'));
+}
+
+let resetSearchForUser = () => {
+    router.visit(route('users.index'));
+}
 
 let editUser = (user_id) => {
     editingUser.value = true;
@@ -191,6 +207,24 @@ let previewAvatar = (event) => {
         </div>
 
         <div class="bg-white shadow sm:rounded-lg mb-5">
+            <div class="flex justify-between mx-3 mb-3 pt-3">
+                <div class="flex justify-center">
+                    <SearchInput id="user-search" type="text" v-model="searchForm.search"
+                                 :disabled="searchForm.processing"
+                                 class="w-96 mr-3"
+                                 placeholder="First name, last name, or email..."
+                    />
+                    <PrimaryButton :class="{ 'opacity-25': searchForm.processing }"
+                                   :disabled="searchForm.processing"
+                                   class="mr-3"
+                                   @click="searchForUser"
+                    >
+                        Search
+                    </PrimaryButton>
+                    <SecondaryButton @click="resetSearchForUser" v-if="searchForm.search.length > 0">Reset</SecondaryButton>
+                </div>
+                <Pagination :users="users" />
+            </div>
             <table class="w-full text-sm text-left text-gray-800">
                 <thead class="text-xs uppercase bg-gray-50">
                 <tr>
@@ -201,7 +235,7 @@ let previewAvatar = (event) => {
                 </tr>
                 </thead>
                 <tbody>
-                <tr v-for="(user, index) in users" class="border-b"
+                <tr v-for="(user, index) in users.data" class="border-b"
                     :class="{'bg-gray-50 text-gray-800': index & 1}"
                 >
                     <td class="px-6 py-3">{{ user.first_name }}</td>

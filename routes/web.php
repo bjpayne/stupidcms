@@ -1,13 +1,11 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UsersController;
 use App\Models\User;
-use App\Models\UserAvatar;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
-use Illuminate\Validation\Rules;
 
 /*
 |--------------------------------------------------------------------------
@@ -38,42 +36,10 @@ Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/users', function () {
-    $users = User::get();
-
-    return Inertia::render('Users', compact('users'));
-})->middleware(['auth', 'verified'])->name('users.index');
-
-Route::post('/users', function (\Illuminate\Http\Request $request) {
-    $request->validate([
-        'first_name' => 'required|string|max:255',
-        'last_name' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:'.User::class,
-        'password' => ['required', 'confirmed', Rules\Password::defaults()],
-    ]);
-
-    $user = User::create([
-        'first_name' => $request->first_name,
-        'last_name'  => $request->last_name,
-        'email'      => $request->email,
-        'password'   => Hash::make($request->password),
-    ]);
-
-    $avatar = $request->file('avatar');
-
-    $userAvatar = new UserAvatar;
-
-    $userAvatar->user_id = $user->id;
-    $userAvatar->avatar = base64_encode($avatar->get());
-
-    $userAvatar->save();
-
-    event(new Registered($user));
-
-    return redirect()
-        ->route('users.index')
-        ->with('User saved!');
-})->middleware(['auth', 'verified'])->name('users.store');
+Route::group(['prefix' => '/users'], function () {
+    Route::get('/', [UsersController::class, 'index'])->name('users.index');
+    Route::post('/', [UsersController::class, 'store'])->name('users.store');
+})->middleware(['auth', 'verified']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
