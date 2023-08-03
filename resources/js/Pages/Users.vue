@@ -208,7 +208,7 @@ let previewAvatar = (event) => {
 
         <div class="bg-white shadow sm:rounded-lg mb-5">
             <div class="flex justify-between mx-3 mb-3 pt-3">
-                <div class="flex justify-center">
+                <div class="flex justify-center items-center">
                     <SearchInput id="user-search" type="text" v-model="searchForm.search"
                                  :disabled="searchForm.processing"
                                  class="w-96 mr-3"

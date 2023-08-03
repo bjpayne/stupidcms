@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\UserAvatar;
 use http\Client\Curl\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\RedirectResponse;
@@ -37,6 +38,16 @@ class ProfileController extends Controller
         }
 
         $request->user()->save();
+
+        $userAvatar = UserAvatar::for($request->user());
+
+        $file = $request->file('avatar');
+
+        if ($userAvatar && $file) {
+            $userAvatar->avatar = base64_encode($file->getContent());
+
+            $userAvatar->save();
+        }
 
         return Redirect::route('profile.edit');
     }

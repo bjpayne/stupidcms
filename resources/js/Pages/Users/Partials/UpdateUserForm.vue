@@ -7,16 +7,14 @@ import { Link, useForm, usePage } from '@inertiajs/vue3';
 import {ref} from "vue";
 
 defineProps({
-    mustVerifyEmail: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
+    user: {
+        type: Object,
+    }
 });
 
-const user = usePage().props.auth.user;
-const avatarPreview = ref('data:image/jpeg;base64,' + user.avatar.avatar);
+const page = usePage();
+const user = page.props.user;
+const avatarPreview = ref('data:image/jpeg;base64,' + page.props.user.avatar.avatar);
 
 const form = useForm({
     _method: 'patch',
@@ -45,7 +43,7 @@ let previewAvatar = (event) => {
             </p>
         </header>
 
-        <form @submit.prevent="form.post(route('profile.update'))" class="mt-6 space-y-6">
+        <form @submit.prevent="form.post(route('users.update'))" class="mt-6 space-y-6">
             <div class="flex gap-3 mb-3 max-w-5xl">
                 <div class="w-1/3 flex items-center justify-center flex-col mr-6">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-64 h-auto fill-gray-300 cursor-pointer" v-if="! user.avatar" @click="$refs.avatar.click()">
@@ -111,27 +109,6 @@ let previewAvatar = (event) => {
                         />
 
                         <InputError class="mt-2" :message="form.errors.email" />
-                    </div>
-
-                    <div v-if="mustVerifyEmail && user.email_verified_at === null">
-                        <p class="text-sm mt-2 text-gray-800">
-                            Your email address is unverified.
-                            <Link
-                                :href="route('verification.send')"
-                                method="post"
-                                as="button"
-                                class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                            >
-                                Click here to re-send the verification email.
-                            </Link>
-                        </p>
-
-                        <div
-                            v-show="status === 'verification-link-sent'"
-                            class="mt-2 font-medium text-sm text-green-600"
-                        >
-                            A new verification link has been sent to your email address.
-                        </div>
                     </div>
                 </div>
             </div>

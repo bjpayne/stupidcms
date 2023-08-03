@@ -2,17 +2,14 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import DeleteUserForm from './Partials/DeleteUserForm.vue';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
-import UpdateProfileInformationForm from './Partials/UpdateProfileInformationForm.vue';
+import UpdateUserForm from './Partials/UpdateUserForm.vue';
 import { Head } from '@inertiajs/vue3';
 import PageTitle from "@/Components/PageTitle.vue";
 
 defineProps({
-    mustVerifyEmail: {
-        type: Boolean,
-    },
-    status: {
-        type: String,
-    },
+    user: {
+        type: Object,
+    }
 });
 </script>
 
@@ -23,9 +20,7 @@ defineProps({
         <PageTitle>Profile</PageTitle>
 
         <div class="p-4 sm:p-8 bg-white shadow sm:rounded-lg mb-5">
-            <UpdateProfileInformationForm
-                :must-verify-email="mustVerifyEmail"
-                :status="status"
+            <UpdateUserForm
                 class="max-w-2xl"
             />
         </div>

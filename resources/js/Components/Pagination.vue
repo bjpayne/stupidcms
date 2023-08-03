@@ -11,7 +11,7 @@ defineProps({
 
 <template>
     <nav aria-label="Pagination" class="flex items-center justify-center" v-if="users.links.length > 1">
-        <Link class="flex items-center justify-center px-3 h-8 ml-0 leading-tight rounded-l-lg text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+        <Link class="flex items-center justify-center px-3 h-8 ml-0 leading-tight rounded-l-lg text-white bg-gray-800 border border-gray-700 hover:text-gray-700"
               :href="users.first_page_url"
 
         >
@@ -19,18 +19,18 @@ defineProps({
                 <path fill-rule="evenodd" d="M15.79 14.77a.75.75 0 01-1.06.02l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 111.04 1.08L11.832 10l3.938 3.71a.75.75 0 01.02 1.06zm-6 0a.75.75 0 01-1.06.02l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 111.04 1.08L5.832 10l3.938 3.71a.75.75 0 01.02 1.06z" clip-rule="evenodd" />
             </svg>
         </Link>
-        <Link class="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+        <Link class="flex items-center justify-center px-3 h-8 ml-0 leading-tight text-white bg-gray-800 border border-gray-700 hover:text-gray-700"
               :href="users.prev_page_url"
 
         >
             Prev
         </Link>
-        <Link class="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+        <Link class="flex items-center justify-center px-3 h-8 leading-tight text-white bg-gray-800 border border-gray-700 hover:text-gray-700"
               :href="users.next_page_url"
         >
             Next
         </Link>
-        <Link class="flex items-center justify-center px-3 h-8 ml-0 leading-tight rounded-r-lg text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700"
+        <Link class="flex items-center justify-center px-3 h-8 ml-0 leading-tight rounded-r-lg text-white bg-gray-800 border border-gray-700 hover:text-gray-700"
               :href="users.last_page_url"
 
         >

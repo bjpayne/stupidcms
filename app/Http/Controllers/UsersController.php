@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Models\UserAvatar;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rules;
 use Inertia\Inertia;
 
 class UsersController extends Controller
@@ -34,20 +35,13 @@ class UsersController extends Controller
         return Inertia::render('Users', compact('users', 'search'));
     }
 
-    public function store(Request $request)
+    public function store(StoreUserRequest $request)
     {
-        $request->validate([
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:'.User::class,
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
-
         $user = User::create([
             'first_name' => $request->first_name,
-            'last_name'  => $request->last_name,
-            'email'      => $request->email,
-            'password'   => \Hash::make($request->password),
+            'last_name' => $request->last_name,
+            'email'     => $request->email,
+            'password'  => \Hash::make($request->password),
         ]);
 
         $avatar = $request->file('avatar');
@@ -64,5 +58,15 @@ class UsersController extends Controller
         return redirect()
             ->route('users.index')
             ->with('User saved!');
+    }
+
+    public function update(UpdateUserRequest $request)
+    {
+
+    }
+
+    public function destroy(Request $request)
+    {
+        
     }
 }
