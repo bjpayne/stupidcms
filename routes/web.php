@@ -38,6 +38,7 @@ Route::get('/dashboard', function () {
 
 Route::group(['prefix' => '/users'], function () {
     Route::get('/', [UsersController::class, 'index'])->name('users.index');
+    Route::get('/users/{user_id}', [UsersController::class, 'edit'])->name('users.edit');
     Route::post('/', [UsersController::class, 'store'])->name('users.store');
     Route::patch('/', [UsersController::class, 'update'])->name('users.update');
     Route::delete('/', [UsersController::class, 'destroy'])->name('users.destroy');

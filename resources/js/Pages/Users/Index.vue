@@ -6,8 +6,7 @@ import TextInput from "@/Components/TextInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import InputError from "@/Components/InputError.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import SecondaryButton from "../../../vendor/laravel/breeze/stubs/inertia-vue-ts/resources/js/Components/SecondaryButton.vue";
-import DeleteButton from "../../../vendor/laravel/breeze/stubs/inertia-vue-ts/resources/js/Components/DeleteButton.vue";
+import SecondaryButton from "@/Components/SecondaryButton.vue";
 import DangerButton from "@/Components/DangerButton.vue";
 import Modal from "@/Components/Modal.vue";
 import {computed, nextTick, ref} from "vue";
@@ -46,6 +45,7 @@ let searchForm = useForm({
 
 let submit = () => {
     form.post(route('users.store'), {
+        preserveState: false,
         onFinish: () => form.reset(),
     });
 };
@@ -58,9 +58,9 @@ let resetSearchForUser = () => {
     router.visit(route('users.index'));
 }
 
-let editUser = (user_id) => {
-    editingUser.value = true;
-};
+let edituser = (user_id) => {
+    router.visit(route('users.edit', {user_id: user_id}));
+}
 
 let confirmUserDeletion = (user_id) => {
     confirmingUserDeletion.value = true;
@@ -242,13 +242,13 @@ let previewAvatar = (event) => {
                     <td class="px-6 py-3">{{ user.last_name }}</td>
                     <td class="px-6 py-3">{{ user.email }}</td>
                     <td class="px-6 py-3 text-right">
-                        <SecondaryButton class="mr-3">
+                        <SecondaryButton @click="editUser" class="mr-3">
                             Edit
                         </SecondaryButton>
 
-                        <DeleteButton @click="confirmUserDeletion(user.id)">
+                        <DangerButton @click="confirmUserDeletion(user.id)">
                             Delete
-                        </DeleteButton>
+                        </DangerButton>
                     </td>
                 </tr>
                 </tbody>
@@ -271,7 +271,7 @@ let previewAvatar = (event) => {
 
                     <TextInput
                         id="password"
-                        ref="passwordInput"
+                        ref="userPasswordInput"
                         v-model="userForm.password"
                         type="password"
                         class="mt-1 block w-full"

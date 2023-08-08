@@ -7,7 +7,9 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use App\Models\UserAvatar;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
 
 class UsersController extends Controller
@@ -22,17 +24,44 @@ class UsersController extends Controller
             $search = $request->get('search');
 
             $users = User::without('avatar')
-                ->orWhere('first_name', 'LIKE', '%'.$search.'%')
-                ->orWhere('last_name', 'LIKE', '%'.$search.'%')
-                ->orWhere('email', 'LIKE', '%'.$search.'%')
+                ->where('id', '<>', $request->user()->id)
+                ->where(function (Builder $builder) use ($search) {
+                    $builder->orWhere('first_name', 'LIKE', '%'.$search.'%')
+                        ->orWhere('last_name', 'LIKE', '%'.$search.'%')
+                        ->orWhere('email', 'LIKE', '%'.$search.'%');
+                })
+                ->orderBy('created_at', 'desc')
                 ->paginate(20);
         }
 
         if (empty($users)) {
-            $users = User::paginate(20);
+            $users = User::where('id', '<>', $request->user()->id)
+                ->orderBy('created_at', 'desc')
+                ->paginate(20);
         }
 
-        return Inertia::render('Users', compact('users', 'search'));
+        return Inertia::render('Users/Index', compact('users', 'search'));
+    }
+
+    public function edit(Request $request)
+    {
+        $user_id = $request->input('user_id');
+
+        $user = User::find($user_id);
+
+        if (! $user) {
+            return redirect(route('users.index'), 400);
+        }
+
+        $user->first_name = $request->input('first_name');
+        $user->last_name = $request->input('last_name');
+        $user->email = $request->input('email');
+        $user->password = $request->input('password');
+
+        $user->save();
+
+        return redirect()
+            ->route('users.index');
     }
 
     public function store(StoreUserRequest $request)
@@ -46,12 +75,14 @@ class UsersController extends Controller
 
         $avatar = $request->file('avatar');
 
-        $userAvatar = new UserAvatar;
+        if (! empty($avatar)) {
+            $userAvatar = new UserAvatar;
 
-        $userAvatar->user_id = $user->id;
-        $userAvatar->avatar = base64_encode($avatar->get());
+            $userAvatar->user_id = $user->id;
+            $userAvatar->avatar = base64_encode($avatar->get());
 
-        $userAvatar->save();
+            $userAvatar->save();
+        }
 
         event(new Registered($user));
 
@@ -67,6 +98,6 @@ class UsersController extends Controller
 
     public function destroy(Request $request)
     {
-        
+
     }
 }

@@ -3,7 +3,7 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import DeleteUserForm from './Partials/DeleteUserForm.vue';
 import UpdatePasswordForm from './Partials/UpdatePasswordForm.vue';
 import UpdateUserForm from './Partials/UpdateUserForm.vue';
-import { Head } from '@inertiajs/vue3';
+import {Head, usePage} from '@inertiajs/vue3';
 import PageTitle from "@/Components/PageTitle.vue";
 
 defineProps({
@@ -11,10 +11,12 @@ defineProps({
         type: Object,
     }
 });
+
+let page = usePage();
 </script>
 
 <template>
-    <Head title="Profile" />
+    <Head :title="page.props.user.full_name" />
 
     <AuthenticatedLayout>
         <PageTitle>Profile</PageTitle>
